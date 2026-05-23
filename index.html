@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Felipe Neves · Dev Front-End</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0b0b0b;
+    --bg2: #111111;
+    --bg3: #181818;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(255,255,255,0.15);
+    --text: #f0ede8;
+    --text-muted: #6b6866;
+    --text-secondary: #a09d99;
+    --accent: #c8f04a;
+    --accent-dim: rgba(200,240,74,0.12);
+    --accent-glow: rgba(200,240,74,0.06);
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(11,11,11,0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-cta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 8px 18px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    text-decoration: none;
+    border-radius: 2px;
+    letter-spacing: 0.04em;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .nav-cta:hover { background: var(--accent); color: var(--bg); }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 8rem 2.5rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 100%, transparent 30%, black 100%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 100%, transparent 30%, black 100%);
+  }
+
+  .hero-glow {
+    position: absolute;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 400px;
+    background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero-name {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 10vw, 9rem);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    opacity: 0;
+    animation: fadeUp 0.7s 0.35s forwards;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-name .line2 {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(240,237,232,0.2);
+  }
+
+  .hero-subtitle {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.5s forwards;
+  }
+
+  .hero-subtitle p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+    max-width: 420px;
+    line-height: 1.7;
+  }
+
+  .hero-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.65s forwards;
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: 2px;
+    letter-spacing: 0.04em;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .tag:hover { border-color: var(--accent); color: var(--accent); }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    right: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeIn 1s 1.2s forwards;
+  }
+
+  .hero-scroll span {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--text-muted), transparent);
+    animation: scrollDrop 1.5s 1.5s ease-in-out infinite;
+  }
+
+  @keyframes scrollDrop {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  /* ─── SECTION BASE ─── */
+  section { padding: 6rem 2.5rem; }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  .section-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    margin-left: auto;
+  }
+
+  /* ─── SOBRE ─── */
+  #sobre {
+    border-top: 1px solid var(--border);
+  }
+
+  .sobre-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .sobre-text p {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 1.25rem;
+    font-weight: 300;
+  }
+
+  .sobre-text p strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .sobre-highlight {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    border-left: 2px solid var(--accent);
+    padding-left: 1.25rem;
+    margin: 2rem 0;
+  }
+
+  .sobre-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    border: 1px solid var(--border);
+  }
+
+  .stat-box {
+    padding: 1.75rem;
+    background: var(--bg2);
+    transition: background 0.2s;
+  }
+
+  .stat-box:hover { background: var(--bg3); }
+
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ─── PROJETOS ─── */
+  #projetos { border-top: 1px solid var(--border); background: var(--bg); }
+
+  .projetos-list { display: flex; flex-direction: column; gap: 1px; border: 1px solid var(--border); }
+
+  .projeto-item {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem 2rem;
+    background: var(--bg2);
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .projeto-item:last-child { border-bottom: none; }
+
+  .projeto-item::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0;
+    background: var(--accent-dim);
+    transition: width 0.3s ease;
+  }
+
+  .projeto-item:hover { background: var(--bg3); }
+  .projeto-item:hover::after { width: 3px; }
+
+  .projeto-num {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+
+  .projeto-info {}
+
+  .projeto-nome {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+    transition: color 0.2s;
+  }
+
+  .projeto-item:hover .projeto-nome { color: var(--accent); }
+
+  .projeto-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .projeto-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .ptag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: 2px;
+    letter-spacing: 0.04em;
+  }
+
+  .projeto-arrow {
+    font-size: 20px;
+    color: var(--text-muted);
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .projeto-item:hover .projeto-arrow { color: var(--accent); transform: translate(3px, -3px); }
+
+  /* ─── HABILIDADES ─── */
+  #habilidades { border-top: 1px solid var(--border); }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    border: 1px solid var(--border);
+  }
+
+  .skill-group {
+    padding: 2rem;
+    background: var(--bg2);
+  }
+
+  .skill-group-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+  }
+
+  .skill-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .skill-list li {
+    font-size: 14px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .skill-list li::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* ─── DIFERENCIAL ─── */
+  #diferencial {
+    border-top: 1px solid var(--border);
+    background: var(--bg2);
+  }
+
+  .diferencial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    border: 1px solid var(--border);
+    margin-top: 0;
+  }
+
+  .dif-card {
+    padding: 2.5rem 2rem;
+    background: var(--bg3);
+    transition: background 0.25s;
+  }
+
+  .dif-card:hover { background: #1e1e1e; }
+
+  .dif-icon {
+    font-size: 2rem;
+    margin-bottom: 1.25rem;
+    display: block;
+  }
+
+  .dif-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.6rem;
+  }
+
+  .dif-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  /* ─── CONTATO ─── */
+  #contato {
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .contato-big {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 8vw, 7rem);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 2rem;
+  }
+
+  .contato-big span {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(200,240,74,0.3);
+  }
+
+  .contato-sub {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-bottom: 3rem;
+    font-weight: 300;
+  }
+
+  .contato-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 4rem;
+  }
+
+  .contato-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 14px 28px;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: 2px;
+    letter-spacing: 0.04em;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+
+  .contato-btn:hover { border-color: var(--border-hover); color: var(--text); }
+
+  .contato-btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+    font-weight: 500;
+  }
+
+  .contato-btn.primary:hover { background: #d4f55c; border-color: #d4f55c; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 1.5rem 2.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer p {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  footer a:hover { color: var(--accent); }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.25rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.25rem; }
+    #hero { padding: 7rem 1.25rem 3rem; }
+    .sobre-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .sobre-stats { grid-template-columns: 1fr 1fr; }
+    .projeto-item { grid-template-columns: 40px 1fr 24px; gap: 1rem; padding: 1.5rem 1.25rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    .hero-scroll { display: none; }
+  }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">FN<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#sobre">sobre</a></li>
+    <li><a href="#projetos">projetos</a></li>
+    <li><a href="#habilidades">skills</a></li>
+    <li><a href="#contato">contato</a></li>
+  </ul>
+  <a href="https://wa.me/+5548988017617" class="nav-cta" target="_blank" rel="noopener">falar agora</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-badge">disponível para projetos</div>
+
+  <h1 class="hero-name">
+    Felipe<br>
+    <span class="line2">Neves</span>
+  </h1>
+
+  <div class="hero-subtitle">
+    <p>Dev Front-End focado em resultados. Crio sites que vendem — com código limpo, automação com IA e entrega real.</p>
+  </div>
+
+  <div class="hero-tags">
+    <span class="tag">HTML · CSS · JS</span>
+    <span class="tag">Automação com IA</span>
+    <span class="tag">Landing Pages</span>
+    <span class="tag">Nevra Systems</span>
+    <span class="tag">Florianópolis · BR</span>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>scroll</span>
+  </div>
+</section>
+
+<!-- SOBRE -->
+<section id="sobre">
+  <div class="section-header reveal">
+    <span class="section-num">01 /</span>
+    <h2 class="section-title">Sobre</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="sobre-grid">
+    <div class="sobre-text reveal">
+      <p>Sou <strong>desenvolvedor front-end</strong> com foco em criar experiências digitais que geram resultado real para negócios. Não fico só aprendendo — entrego.</p>
+
+      <div class="sobre-highlight">
+        "Já entrego, não só aprendo."
+      </div>
+
+      <p>Fundei a <strong>Nevra Systems</strong>, onde combino desenvolvimento web com automação inteligente para transformar negócios em máquinas de venda — com presença digital ativa 24h, capturando leads e convertendo clientes.</p>
+
+      <p>Uso <strong>Inteligência Artificial como ferramenta de produtividade</strong> — o que significa que entrego mais rápido, com mais qualidade e com soluções que a maioria dos devs ainda não usa.</p>
+    </div>
+
+    <div class="sobre-stats reveal">
+      <div class="stat-box">
+        <div class="stat-num">9+</div>
+        <div class="stat-label">Projetos no GitHub</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Apps publicados</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">24h</div>
+        <div class="stat-label">Sites que nunca dormem</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Disposição para entregar</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJETOS -->
+<section id="projetos">
+  <div class="section-header reveal">
+    <span class="section-num">02 /</span>
+    <h2 class="section-title">Projetos</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="projetos-list">
+
+    <a href="https://devnvs.github.io/nevra-systems/" target="_blank" rel="noopener" class="projeto-item reveal">
+      <div class="projeto-num">01</div>
+      <div class="projeto-info">
+        <div class="projeto-nome">Nevra Systems</div>
+        <div class="projeto-desc">Site institucional com foco em conversão. Copy orientado a venda, CTA direto para WhatsApp e presença 24h. Meu negócio, meu projeto mais completo.</div>
+        <div class="projeto-tags">
+          <span class="ptag">HTML</span>
+          <span class="ptag">CSS</span>
+          <span class="ptag">JavaScript</span>
+          <span class="ptag">Copywriting</span>
+          <span class="ptag">Conversão</span>
+        </div>
+      </div>
+      <div class="projeto-arrow">↗</div>
+    </a>
+
+    <a href="https://devnvs.github.io/nevra-randomizer/" target="_blank" rel="noopener" class="projeto-item reveal">
+      <div class="projeto-num">02</div>
+      <div class="projeto-info">
+        <div class="projeto-nome">Nevra Randomizer</div>
+        <div class="projeto-desc">Aplicação web utilitária com lógica em JavaScript puro. Interface limpa, funcional, demonstra domínio de interatividade e UX.</div>
+        <div class="projeto-tags">
+          <span class="ptag">JavaScript</span>
+          <span class="ptag">CSS</span>
+          <span class="ptag">UX</span>
+          <span class="ptag">App Web</span>
+        </div>
+      </div>
+      <div class="projeto-arrow">↗</div>
+    </a>
+
+    <a href="https://github.com/devnvs/nevra-converter" target="_blank" rel="noopener" class="projeto-item reveal">
+      <div class="projeto-num">03</div>
+      <div class="projeto-info">
+        <div class="projeto-nome">Nevra Converter</div>
+        <div class="projeto-desc">Conversor com lógica de negócio implementada em JavaScript puro. Projeto que demonstra raciocínio lógico e estrutura de código organizada.</div>
+        <div class="projeto-tags">
+          <span class="ptag">JavaScript</span>
+          <span class="ptag">HTML</span>
+          <span class="ptag">Lógica</span>
+        </div>
+      </div>
+      <div class="projeto-arrow">↗</div>
+    </a>
+
+  </div>
+
+  <p style="margin-top: 1.5rem; font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">
+    → Todos os projetos em <a href="https://github.com/devnvs" target="_blank" style="color: var(--accent); text-decoration: none;">github.com/devnvs</a>
+  </p>
+</section>
+
+<!-- HABILIDADES -->
+<section id="habilidades">
+  <div class="section-header reveal">
+    <span class="section-num">03 /</span>
+    <h2 class="section-title">Habilidades</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="skills-grid">
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Front-End</div>
+      <ul class="skill-list">
+        <li>HTML5 semântico</li>
+        <li>CSS3 / Flexbox / Grid</li>
+        <li>JavaScript ES6+</li>
+        <li>Design responsivo</li>
+        <li>Animações CSS</li>
+      </ul>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Produto & Negócio</div>
+      <ul class="skill-list">
+        <li>Landing pages de conversão</li>
+        <li>Copy orientado a venda</li>
+        <li>UX / Experiência do usuário</li>
+        <li>CTA e funis digitais</li>
+        <li>Captação de leads</li>
+      </ul>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-group-title">IA & Automação</div>
+      <ul class="skill-list">
+        <li>Uso de IA para produtividade</li>
+        <li>Automação de fluxos</li>
+        <li>Otimização de processos</li>
+        <li>Ferramentas no-code / low-code</li>
+      </ul>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-group-title">Ferramentas</div>
+      <ul class="skill-list">
+        <li>Git & GitHub</li>
+        <li>GitHub Pages (deploy)</li>
+        <li>VS Code</li>
+        <li>Figma (básico)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- DIFERENCIAL -->
+<section id="diferencial">
+  <div class="section-header reveal">
+    <span class="section-num">04 /</span>
+    <h2 class="section-title">Por que eu</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="diferencial-grid">
+    <div class="dif-card reveal">
+      <span class="dif-icon">⚡</span>
+      <div class="dif-title">Entrego, não só aprendo</div>
+      <div class="dif-text">Tenho projetos rodando em produção. Não é portfólio de exercício — é código que funciona para negócios reais.</div>
+    </div>
+    <div class="dif-card reveal">
+      <span class="dif-icon">🤖</span>
+      <div class="dif-title">IA como ferramenta</div>
+      <div class="dif-text">Uso inteligência artificial para produzir mais rápido e com mais qualidade — uma vantagem que a maioria dos devs ainda não abraçou.</div>
+    </div>
+    <div class="dif-card reveal">
+      <span class="dif-icon">🎯</span>
+      <div class="dif-title">Mentalidade de negócio</div>
+      <div class="dif-text">Como fundador da Nevra Systems, penso além do código — penso em conversão, em leads, em resultado para o cliente.</div>
+    </div>
+    <div class="dif-card reveal">
+      <span class="dif-icon">📍</span>
+      <div class="dif-title">Disponível agora</div>
+      <div class="dif-text">Estou em Florianópolis, disponível para projetos freelance e colaborações. Resposta rápida, compromisso real.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTATO -->
+<section id="contato">
+  <div class="contato-big reveal">
+    Vamos<br>
+    <span>trabalhar.</span>
+  </div>
+  <p class="contato-sub reveal">Tenho um projeto para você. Vamos conversar?</p>
+
+  <div class="contato-links reveal">
+    <a href="https://wa.me/+5548988017617" class="contato-btn primary" target="_blank" rel="noopener">
+      → WhatsApp
+    </a>
+    <a href="https://www.linkedin.com/in/devfelipeneves/" class="contato-btn" target="_blank" rel="noopener">
+      LinkedIn
+    </a>
+    <a href="https://github.com/devnvs" class="contato-btn" target="_blank" rel="noopener">
+      GitHub
+    </a>
+    <a href="mailto:financeiro@nevrasystems.com" class="contato-btn" target="_blank" rel="noopener">
+      E-mail
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Felipe Neves Ferreira · Nevra Systems</p>
+  <p><a href="https://github.com/devnvs" target="_blank">github.com/devnvs</a></p>
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+
+  const applyReveal = (el) => {
+    // Ensure the final state is set.
+    el.classList.add('visible');
+  };
+
+  // Fallback: if IntersectionObserver isn't supported, reveal everything.
+  if (!('IntersectionObserver' in window)) {
+    reveals.forEach(applyReveal);
+  } else {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Avoid arbitrary timeouts; sync with the next paint.
+          requestAnimationFrame(() => applyReveal(entry.target));
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.15,
+      // Trigger a bit earlier so animations start reliably while scrolling.
+      rootMargin: '0px 0px -10% 0px'
+    });
+
+    reveals.forEach(el => observer.observe(el));
+  }
+</script>
+
+</body>
+</html>
