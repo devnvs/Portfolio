@@ -97,22 +97,12 @@ Para ativar em um fork:
 
 ---
 
-## Projetos linkados
-
-| Projeto | Repositório | Demo |
-|---------|-------------|------|
-| Nevra Systems | [devnvs/nevra-systems](https://github.com/devnvs/nevra-systems) | [ver ao vivo](https://devnvs.github.io/nevra-systems/) |
-| Nevra Randomizer | [devnvs/nevra-randomizer](https://github.com/devnvs/nevra-randomizer) | [ver ao vivo](https://devnvs.github.io/nevra-randomizer/) |
-| Nevra Converter | [devnvs/nevra-converter](https://github.com/devnvs/nevra-converter) | [ver ao vivo](https://devnvs.github.io/nevra-converter/) |
-
----
-
 ## Contato
 
 **Felipe Neves Ferreira** · Dev Front-End · Fundador da [Nevra Systems](https://nevrasystems.com)
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-devfelipeneves-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/devfelipeneves/)
-[![WhatsApp](https://img.shields.io/badge/WhatsApp-falar%20agora-25D366?style=flat&logo=whatsapp&logoColor=white)](https://wa.me/+5548988017617)
+[![WhatsApp](https://img.shields.io/badge/WhatsApp-falar%20agora-25D366?style=flat&logo=whatsapp&logoColor=white)](https://wa.me/+5548999187621)
 [![GitHub](https://img.shields.io/badge/GitHub-devnvs-181717?style=flat&logo=github&logoColor=white)](https://github.com/devnvs)
 
 ---
