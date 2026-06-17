@@ -103,7 +103,7 @@ Para ativar em um fork:
 |---------|-------------|------|
 | Nevra Systems | [devnvs/nevra-systems](https://github.com/devnvs/nevra-systems) | [ver ao vivo](https://devnvs.github.io/nevra-systems/) |
 | Nevra Randomizer | [devnvs/nevra-randomizer](https://github.com/devnvs/nevra-randomizer) | [ver ao vivo](https://devnvs.github.io/nevra-randomizer/) |
-| Nevra Converter | [devnvs/nevra-converter](https://github.com/devnvs/nevra-converter) | — |
+| Nevra Converter | [devnvs/nevra-converter](https://github.com/devnvs/nevra-converter) | [ver ao vivo](https://devnvs.github.io/nevra-converter/) |
 
 ---
 
